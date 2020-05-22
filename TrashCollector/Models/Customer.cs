@@ -11,15 +11,18 @@ namespace TrashCollector.Models
     public class Customer
     {
         [Key]
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int CustomerId { get; set; }
+        public string CustomerName { get; set; }
         [Required]
         public string Address { get; set; }
         [Required]
         public string City { get; set; }
+        public string State { get; set; }
         [Required]
         public double ZipCode { get; set; }
-        public double Balance { get; set; }
+        public string TrashPickUp { get; set; }
+        public string TempSuspendPU { get; set; }
+        public double CustomerBalance { get; set; }
 
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }
