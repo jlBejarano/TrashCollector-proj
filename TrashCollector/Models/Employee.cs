@@ -14,10 +14,7 @@ namespace TrashCollector.Models
         public int EmployeeId { get; set; }
         [Required]
         public string Name { get; set; }
-        [Required]
-        public string Address { get; set; }
-        [Required]
-        public string City { get; set; }
+        
         [Required]
         public double ZipCode { get; set; }
 
