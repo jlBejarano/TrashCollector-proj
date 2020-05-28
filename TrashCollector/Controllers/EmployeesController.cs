@@ -45,6 +45,16 @@ namespace TrashCollector.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(EmployeeCustomersView employeeCustomersView)
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            employeeCustomersView.employee = _context.Employees.Where(e => e.IdentityUserId == userId).SingleOrDefault();
+            employeeCustomersView.DaysToChoose = new SelectList(new List<string>() { "Mon", "Tues", "Wed", "Thurs", "Fri" });
+            return View(employeeCustomersView);
+        }
+
         // GET: Employee/Details/5
         public async Task<IActionResult> Details(int? id)
         {
