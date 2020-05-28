@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TrashCollector.Models.Employee>
+﻿@model TrashCollector.Models.EmployeeCustomersView
 
 @{
     ViewData["Title"] = "Employee Home";
@@ -24,7 +24,7 @@
                 </style>
 </head>
 <body>
-    <div id="map"</div>
+    <div> id="map"</div>
     <script>
         var map;
         funciton initMap()
@@ -43,38 +43,31 @@
 </body>
 </html>
 
-<h3>Welcome </h3>
+<h3>Welcome</h3>
     
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ZipCode)
+                @Html.DisplayNameFor(model => model.Customers[0].CustomerName)
             </th>
             
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
+       @foreach (var item in Model.Customers)
+        {
+          <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.CustomerName)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ZipCode)
-            </td>
-            
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.EmployeeId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EmployeeId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EmployeeId">Delete</a>
-            </td>
-        </tr>
-}
+       
+          </tr>
+        }
     </tbody>
 </table>
+<form asp-action="Index">
+    <select asp-for="DaySelected" asp-items="@Model.DaysToChoose"></select>
+    <button type="submit">DaySelected</button>
+</form>

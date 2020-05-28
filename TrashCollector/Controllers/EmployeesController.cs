@@ -24,7 +24,15 @@ namespace TrashCollector.Controllers
         // GET: Employee
         public async Task<IActionResult> Index()
         {
+            EmployeeCustomersView employeeCustomersView = new EmployeeCustomersView();
+            DateTime today = DateTime.Today;
+            EmployeeTrashPU employeeTrashPU = new EmployeeTrashPU();
+
+
             var id = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            employeeCustomersView.employee = _context.Employees.Where(e => e.IdentityUserId == id).SingleOrDefault();
+            employeeCustomersView.Customers = _context.Customers.Where(c => c.ZipCode == employeeCustomersView.employee.ZipCode).ToList();
+
             if (_context.Employees.Where(e => e.IdentityUserId == id).SingleOrDefault() == null)
             {
                 return View("Create");

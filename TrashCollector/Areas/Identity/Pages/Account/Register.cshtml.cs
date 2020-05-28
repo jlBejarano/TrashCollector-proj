@@ -109,6 +109,7 @@ namespace TrashCollector.Areas.Identity.Pages.Account
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
+                    
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     if (Input.Role.Equals("Customer"))
                     {
@@ -116,6 +117,8 @@ namespace TrashCollector.Areas.Identity.Pages.Account
                     }
                     else
                     {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        
                         return RedirectToAction("Create", "Employees");
                        
                     }
