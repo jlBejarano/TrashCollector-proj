@@ -17,7 +17,7 @@ namespace TrashCollector.Data
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Employee> Employees { get; set; }
-
+        public DbSet<CustomerSchedulePU> CustomerSchedulePUs { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -27,5 +27,7 @@ namespace TrashCollector.Data
             builder.Entity<IdentityRole>().HasData(new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" });
 
         }
+
+        public DbSet<TrashCollector.Models.CustomerSchedulePU> CustomerSchedulePU { get; set; }
     }
 }

@@ -74,6 +74,42 @@ namespace TrashCollector.Controllers
             return View(customer);
 
         }
+        public IActionResult SchedulePickUp()
+        {
+            CustomerSchedulePU item = _context.CustomerSchedulePUs.Where(c => c.IdentityUserId == this.User.FindFirstValue(ClaimTypes.NameIdentifier)).SingleOrDefault();
+            if(item == null)
+            {
+                return View("CreateSchdulePickUp");
+            }
+            else
+            {
+                return View(item);
+            }
+            
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateSchedulePickUp(CustomerSchedulePU customerSchedulePU)
+        {
+            try
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var customer = _context.Customers.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+
+                customerSchedulePU.IdentityUserId = userId;
+                customerSchedulePU.Address = customer.Address;
+                customerSchedulePU.City = customer.City;
+                customerSchedulePU.ZipCode = customer.ZipCode;
+                _context.CustomerSchedulePUs.Add(customerSchedulePU);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
 
         // GET: Customer/Edit/5
         public async Task<IActionResult> Edit(int? id)
