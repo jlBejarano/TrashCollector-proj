@@ -107,7 +107,7 @@ namespace TrashCollector.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
                     }
                     
                     await _signInManager.SignInAsync(user, isPersistent: false);
@@ -117,7 +117,7 @@ namespace TrashCollector.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        
                         
                         return RedirectToAction("Create", "Employees");
                        

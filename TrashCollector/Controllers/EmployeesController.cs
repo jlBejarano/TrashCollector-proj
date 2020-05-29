@@ -31,7 +31,7 @@ namespace TrashCollector.Controllers
 
             var id = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             employeeCustomersView.employee = _context.Employees.Where(e => e.IdentityUserId == id).SingleOrDefault();
-            employeeCustomersView.Customers = _context.Customers.Where(c => c.ZipCode == employeeCustomersView.employee.ZipCode).ToList();
+            
 
             if (_context.Employees.Where(e => e.IdentityUserId == id).SingleOrDefault() == null)
             {
@@ -53,6 +53,12 @@ namespace TrashCollector.Controllers
             employeeCustomersView.employee = _context.Employees.Where(e => e.IdentityUserId == userId).SingleOrDefault();
             employeeCustomersView.DaysToChoose = new SelectList(new List<string>() { "Mon", "Tues", "Wed", "Thurs", "Fri" });
             return View(employeeCustomersView);
+        }
+        public ActionResult CustomerProfile(string item)
+        {
+            
+            Customer customer = _context.Customers.Where(c => c.IdentityUserId == item ).SingleOrDefault();
+            return View(customer);
         }
 
         // GET: Employee/Details/5
@@ -87,6 +93,13 @@ namespace TrashCollector.Controllers
             try
             {
                 // TODO: Add insert logic here
+                Employee newEmployee = new Employee();
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                newEmployee.IdentityUserId = userId;
+                newEmployee.Name = employee.Name;
+                newEmployee.Address = employee.Address;
+                newEmployee.City = employee.City;
+                newEmployee.ZipCode = employee.ZipCode;
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -118,28 +131,62 @@ namespace TrashCollector.Controllers
         public async Task<IActionResult> Edit(int? id, Employee employee)
         {
 
-            try
+            if(id != employee.EmployeeId)
             {
-                // TODO: Add update logic here
-                _context.Update(employee);
-                await _context.SaveChangesAsync();
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // TODO: Add update logic here
+                    _context.Update(employee);
+                    await _context.SaveChangesAsync();
+
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EmployeeRemains(employee.EmployeeId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+
+                }
+                return RedirectToAction(nameof(Index));
                 
             }
-            catch (DbUpdateConcurrencyException)
-            {
+            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
+            return View(employee);
+        }
+        private bool EmployeeRemains(int id)
+        {
+            return _context.Employees.Any(e => e.EmployeeId == id);
+        }
 
-            }
-            return RedirectToAction(nameof(Index));
-            {
-            }
+            
+        public ActionResult CustomerSchdeuledPU()
+        {
+            return View();
         }
 
         // GET: Employee/Delete/5
         public async Task <IActionResult> Delete(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             var employee = await _context.Employees
                 .Include(e => e.IdentityUser)
-                .FirstOrDefaultAsync(e => e.EmployeeId == id);
+                .FirstOrDefaultAsync(m => m.EmployeeId == id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
             return View(employee);
         }
 
