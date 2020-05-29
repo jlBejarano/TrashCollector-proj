@@ -1,73 +1,49 @@
-﻿@model TrashCollector.Models.EmployeeCustomersView
+﻿@model IEnumerable<TrashCollector.Models.CustomerSchedulePU>
 
 @{
-    ViewData["Title"] = "Employee Home";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
 }
+<h1>PickUp Trash Today</h1>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Map</title>
-    <meta name="viewport" content="initial-scale=1.0" />
-          <meta charset="utf-8" />
-                <style>
-                    #map{
-                        height:100%;
-                    }
-                    html, body{
-                        height:100%
-                        margin:0;
-                        padding:0;
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Customer Id</th>
+        <th>Address</th>
+        <th>City</th>
+        <th>ZipCode</th>
+        <th>Day of Week</th>
+        <th></th>
 
-                    }
-                </style>
-</head>
-<body>
-    <div> id="map"</div>
-    <script>
-        var map;
-        funciton initMap()
-        {
-            map = new google.maps.Map(document.getElementById('map'),
-        }
-        center: { lat: -43.0389, lng: -87.9065 },
-        zoom: 7
-        });
-        }
-        
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB74-RvWvZttGsfW1473z1WPyVPE3yPD4A&callback=initMap"
-        async defer></script>
-    
-</body>
-</html>
 
-<h3>Welcome</h3>
-    
-
-<table class="table">
-    <thead>
+    </tr>
+    @foreach (var d in Model)
+    {
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Customers[0].CustomerName)
-            </th>
-            
-        </tr>
-    </thead>
-    <tbody>
-       @foreach (var item in Model.Customers)
-        {
-          <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.CustomerName)
+                @Html.ActionLink(
+               d.IdentityUserId,
+               "CustomerProfile",
+               "Employees",
+               new
+               { CustomerSchedulePU = d.IdentityUserId},
+               null)
             </td>
-       
-          </tr>
-        }
-    </tbody>
+            <td>@d.Address</td>
+            <td>@d.City</td>
+            <td>@d.ZipCode</td>
+            <td>@d.DayOfWeek</td>
+            <td>
+                @Html.ActionLink(
+               "Confirm",
+               "Confirm",
+               "Employees",
+               new
+               { CustomerSchedulePU = d.IdentityUserId},
+               null
+               )
+            </td>
+        </tr>
+    }
 </table>
-<form asp-action="Index">
-    <select asp-for="DaySelected" asp-items="@Model.DaysToChoose"></select>
-    <button type="submit">DaySelected</button>
-</form>
+

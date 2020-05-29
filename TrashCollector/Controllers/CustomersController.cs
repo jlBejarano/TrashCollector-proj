@@ -90,7 +90,7 @@ namespace TrashCollector.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateSchedulePickUp(CustomerSchedulePU customerSchedulePU)
+        public ActionResult CreateSchedulePickUp(CustomerSchedulePU customerSchedulePU)
         {
             try
             {
@@ -163,6 +163,27 @@ namespace TrashCollector.Controllers
                 ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
                 return View(customer); 
         }
+        [HttpPost]
+        public ActionResult Edit(CustomerSchedulePU customerSchedulePU)
+        {
+            try
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var temp = _context.CustomerSchedulePUs.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+                temp.Address = customerSchedulePU.Address;
+                temp.DayOfWeek = customerSchedulePU.DayOfWeek;
+                temp.SuspendStartDate = customerSchedulePU.SuspendStartDate;
+                temp.SuspendEndDate = customerSchedulePU.SuspendEndDate;
+
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
 
         private bool CustomerFound(int id)
         {
