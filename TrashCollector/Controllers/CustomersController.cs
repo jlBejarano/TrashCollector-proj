@@ -164,6 +164,7 @@ namespace TrashCollector.Controllers
                 return View(customer); 
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(CustomerSchedulePU customerSchedulePU)
         {
             try

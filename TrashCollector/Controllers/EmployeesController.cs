@@ -35,7 +35,7 @@ namespace TrashCollector.Controllers
 
             if (_context.Employees.Where(e => e.IdentityUserId == id).SingleOrDefault() == null)
             {
-                return View("Create");
+                return View();
             }
             else
             {
@@ -88,28 +88,23 @@ namespace TrashCollector.Controllers
         // POST: Employee/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Employee employee)
+        public async Task<IActionResult> Create([Bind("EmployeeId, EmployeeName, EmployeeZipCode")]Employee employee)
         {
-            try
+            if (ModelState.IsValid)
             {
                 // TODO: Add insert logic here
-                Employee newEmployee = new Employee();
-                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                newEmployee.IdentityUserId = userId;
-                newEmployee.Name = employee.Name;
-                newEmployee.Address = employee.Address;
-                newEmployee.City = employee.City;
-                newEmployee.ZipCode = employee.ZipCode;
+                
+                
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
+                
+               
             }
-            catch
-            {
-                ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
+            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
                 return View(employee);
-            }
-        }
+        } 
 
         // GET: Employee/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -131,12 +126,6 @@ namespace TrashCollector.Controllers
         public async Task<IActionResult> Edit(int? id, Employee employee)
         {
 
-            if(id != employee.EmployeeId)
-            {
-                return NotFound();
-            }
-            if (ModelState.IsValid)
-            {
                 try
                 {
                     // TODO: Add update logic here
@@ -146,26 +135,13 @@ namespace TrashCollector.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeRemains(employee.EmployeeId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+               
 
                 }
                 return RedirectToAction(nameof(Index));
                 
-            }
-            ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", employee.IdentityUserId);
-            return View(employee);
         }
-        private bool EmployeeRemains(int id)
-        {
-            return _context.Employees.Any(e => e.EmployeeId == id);
-        }
+       
 
             
         public ActionResult CustomerSchdeuledPU()
