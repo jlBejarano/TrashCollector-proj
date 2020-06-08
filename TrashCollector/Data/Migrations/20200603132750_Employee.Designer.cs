@@ -3,19 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrashCollector.Data;
 
 namespace TrashCollector.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200603132750_Employee")]
+    partial class Employee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.4")
+                .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -48,22 +50,22 @@ namespace TrashCollector.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0619d567-c937-4362-9a9c-53513cd3bc01",
-                            ConcurrencyStamp = "99875841-c2f6-428f-ab12-a7581c8fe009",
+                            Id = "c148885d-1382-40c0-a6c6-4e63c05795d5",
+                            ConcurrencyStamp = "cffd36c1-46ee-4f7a-81ec-9dbb897f5fd8",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "46b90f1c-006a-4706-8af2-ffeb65ee268d",
-                            ConcurrencyStamp = "a447f0a9-bc74-41aa-9aac-64a61c002a3d",
+                            Id = "05b4fb0b-5c6a-4132-b502-a64cfeca5cfd",
+                            ConcurrencyStamp = "f55826b5-8ef1-4544-887d-1b3ec9973b9f",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "0a361289-72bb-412d-a0fe-94db1b406430",
-                            ConcurrencyStamp = "c4090577-f74d-4e35-a6cb-68705957984d",
+                            Id = "8820f5fc-0a82-4142-b5a2-00eb028c6f7c",
+                            ConcurrencyStamp = "97175c48-a6e4-4ac0-8324-1893cc7116fd",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -249,8 +251,9 @@ namespace TrashCollector.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("ConfirmPickUp")
-                        .HasColumnType("bit");
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("CustomerBalance")
                         .HasColumnType("float");
@@ -258,26 +261,11 @@ namespace TrashCollector.Data.Migrations
                     b.Property<string>("CustomerName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DayOfWeek")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ExtraPickUp")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("IdentityUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("SuspendEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("SuspendStartDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TempSuspendPU")
                         .HasColumnType("nvarchar(max)");
@@ -293,6 +281,42 @@ namespace TrashCollector.Data.Migrations
                     b.HasIndex("IdentityUserId");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("TrashCollector.Models.CustomerSchedulePU", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DayOfWeek")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SuspendEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("SuspendStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("ZipCode")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdentityUserId");
+
+                    b.ToTable("CustomerSchedulePU");
                 });
 
             modelBuilder.Entity("TrashCollector.Models.Employee", b =>
@@ -379,6 +403,13 @@ namespace TrashCollector.Data.Migrations
                 });
 
             modelBuilder.Entity("TrashCollector.Models.Customer", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId");
+                });
+
+            modelBuilder.Entity("TrashCollector.Models.CustomerSchedulePU", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
                         .WithMany()
