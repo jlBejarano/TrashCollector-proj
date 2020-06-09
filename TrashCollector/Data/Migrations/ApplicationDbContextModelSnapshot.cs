@@ -48,22 +48,22 @@ namespace TrashCollector.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0619d567-c937-4362-9a9c-53513cd3bc01",
-                            ConcurrencyStamp = "99875841-c2f6-428f-ab12-a7581c8fe009",
+                            Id = "8e349d56-b298-402d-85c2-c1912783ae4b",
+                            ConcurrencyStamp = "3d32b398-04af-48e0-86dc-f6d16590348f",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "46b90f1c-006a-4706-8af2-ffeb65ee268d",
-                            ConcurrencyStamp = "a447f0a9-bc74-41aa-9aac-64a61c002a3d",
+                            Id = "dc5283b8-9473-43c1-8383-8b43e79c4fde",
+                            ConcurrencyStamp = "955543f8-35a5-4e27-b9e0-5f033234b02b",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "0a361289-72bb-412d-a0fe-94db1b406430",
-                            ConcurrencyStamp = "c4090577-f74d-4e35-a6cb-68705957984d",
+                            Id = "438b6e71-9c95-4a81-9407-fe821d5a47a4",
+                            ConcurrencyStamp = "89a08af9-51c2-4213-8304-9e95bcc1a8d6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -261,6 +261,9 @@ namespace TrashCollector.Data.Migrations
                     b.Property<string>("DayOfWeek")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("DaysOfWeekId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -290,9 +293,26 @@ namespace TrashCollector.Data.Migrations
 
                     b.HasKey("CustomerId");
 
+                    b.HasIndex("DaysOfWeekId");
+
                     b.HasIndex("IdentityUserId");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("TrashCollector.Models.DaysOfWeek", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DaysOfWeeks");
                 });
 
             modelBuilder.Entity("TrashCollector.Models.Employee", b =>
@@ -301,14 +321,6 @@ namespace TrashCollector.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdentityUserId")
                         .HasColumnType("nvarchar(450)");
@@ -380,6 +392,12 @@ namespace TrashCollector.Data.Migrations
 
             modelBuilder.Entity("TrashCollector.Models.Customer", b =>
                 {
+                    b.HasOne("TrashCollector.Models.DaysOfWeek", "DaysOfWeek")
+                        .WithMany()
+                        .HasForeignKey("DaysOfWeekId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
                         .WithMany()
                         .HasForeignKey("IdentityUserId");

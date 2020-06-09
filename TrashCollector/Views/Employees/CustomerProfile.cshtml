@@ -1,0 +1,141 @@
+﻿@model TrashCollector.Models.Customer
+
+@{
+    ViewData["Title"] = "CustomerProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>CustomerProfile</h1>
+
+<div>
+    <h4>Customer</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CustomerName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CustomerName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ZipCode)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ZipCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TrashPickUp)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TrashPickUp)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TempSuspendPU)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TempSuspendPU)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CustomerBalance)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CustomerBalance)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ExtraPickUp)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ExtraPickUp)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DayOfWeek)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DayOfWeek)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SuspendStartDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SuspendStartDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SuspendEndDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SuspendEndDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ConfirmPickUp)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ConfirmPickUp)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdentityUser)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdentityUser.Id)
+        </dd>
+    </dl>
+</div>
+<div id="dvMap" style="height:250px;"></div>
+<input type="text" id="Lat">
+<input type="text" id="Long">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAnxLPpaJuGZeaX-FBpaeyXMIRCKVq21xQ&callback=initMap" async defer></script>
+
+<script type="text/javascript">
+
+    function initMap() {
+        //map..
+
+
+        var map = new google.maps.Map(document.getElementById('dvMap'), {
+            center: {
+                lat: 10.9968683,
+                lng: 76.00882
+            },
+            zoom: 15
+        });
+        //marker..
+        var marker = new google.maps.Marker({
+            position: {
+                lat: 10.9968683,
+                lng: 76.00882
+            },
+            map: map,
+            draggable: true
+        });
+        //dragend event of marker
+        google.maps.event.addListener(marker, 'dragend', function () {
+            var Lats = marker.getPosition().lat();
+            var Longs = marker.getPosition().lng();
+            $('#Lat').val(Lats);
+            $('#Long').val(Longs);
+        });
+    }
+</script>
+
+<div>
+
+    <a asp-action="Index">Back to List</a>
+</div>
