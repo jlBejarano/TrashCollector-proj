@@ -27,7 +27,6 @@ namespace TrashCollector.Models
         public DateTime StartDate { get; set; }
         [DisplayName("End Pick Up")]
         public DateTime EndDate { get; set; }
-        public string DayOfWeek { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime SuspendStartDate { get; set; }

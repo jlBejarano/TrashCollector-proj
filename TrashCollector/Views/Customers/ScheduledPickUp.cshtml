@@ -1,11 +1,11 @@
 ﻿@model TrashCollector.Models.Customer
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "ScheduledPickUp";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>ScheduledPickUp</h1>
 
 <div>
     <h4>Customer</h4>
@@ -65,7 +65,6 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.EndDate)
         </dd>
-       
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.SuspendStartDate)
         </dt>

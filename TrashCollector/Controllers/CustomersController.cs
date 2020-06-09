@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,11 +20,20 @@ namespace TrashCollector.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> Home()
+        {
+            return View();
+        }
+
         // GET: Customers
         public async Task<IActionResult> Index()
         {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var customer = _context.Customers.Where(c => c.IdentityUserId == userId).SingleOrDefaultAsync();
             var applicationDbContext = _context.Customers.Include(c => c.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+                return View(customer);
+            
+            
         }
 
         // GET: Customers/Details/5
@@ -60,12 +70,54 @@ namespace TrashCollector.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                customer.IdentityUserId = userId;
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdentityUserId"] = new SelectList(_context.Users, "Id", "Id", customer.IdentityUserId);
             return View(customer);
+        }
+
+        public ActionResult ScheduledPickUp()
+        {
+            CustomerSchedulePU item = _context.CustomerSchedulePUs.Where(c => c.IdentityUserId == this.User.FindFirstValue(ClaimTypes.NameIdentifier)).SingleOrDefault();
+            if(item == null)
+            {
+                return View("CreateScheduledPickUp");
+            }
+            else
+            {
+                return View(item);
+            }
+        }
+
+        public ActionResult CreateSchedulePU()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateSchedulePU(CustomerSchedulePU customerSchedulePU)
+        {
+            try
+            {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var customer = _context.Customers.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+                customerSchedulePU.IdentityUserId = userId;
+                customerSchedulePU.Address = customer.Address;
+                customerSchedulePU.ZipCode = customer.ZipCode;
+                _context.CustomerSchedulePUs.Add(customerSchedulePU);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+
+            }
+            catch
+            {
+                return View();
+            }
         }
 
         // GET: Customers/Edit/5
