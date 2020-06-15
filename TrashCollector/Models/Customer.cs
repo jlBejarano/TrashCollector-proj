@@ -18,6 +18,7 @@ namespace TrashCollector.Models
         public string Address { get; set; }
         [Required]
         public double ZipCode { get; set; }
+        public string DayOfWeek { get; set; }
         public string TrashPickUp { get; set; }
         public string TempSuspendPU { get; set; }
         public double CustomerBalance { get; set; }

@@ -1,44 +1,52 @@
-﻿@model IEnumerable<TrashCollector.Models.Employee>
+﻿@model IEnumerable<TrashCollector.Models.CustomerSchedulePU>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Today's Pickups</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ZipCode)
-            </th>
-            
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
+
+<table class="table table-bordered  table-hover">
+    <tr>
+        <th>Customer Id </th>
+        <th>Address </th>
+        <th>City </th>
+        <th>Zip Code</th>
+        <th>Day Of Week</th>
+        <th></th>
+
+    </tr>
+    @foreach (var d in Model)
+    {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.ActionLink(
+                         d.IdentityUserId,                                                 
+                         "CustomerProfile",                                  
+                         "Employees",                                                  
+                            new
+                                 { item = d.IdentityUserId },
+                            null)
             </td>
+            <td>@d.Address</td>
+            <td>@d.City</td>
+            <td>@d.ZipCode</td>
+            <td>@d.DayOfWeek</td>
             <td>
-                @Html.DisplayFor(modelItem => item.ZipCode)
+                @Html.ActionLink(
+                 "Confirm",                                                 
+                 "Confirm",                                  
+                 "Employees",                                                  
+                    new
+                         { item = d.IdentityUserId },
+                    null                                                     
+)
             </td>
-          
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.EmployeeId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EmployeeId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EmployeeId">Delete</a>
-            </td>
+
+
         </tr>
-}
-    </tbody>
+
+    }
 </table>

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using TrashCollector.Data;
 using TrashCollector.Models;
 
@@ -13,18 +15,131 @@ namespace TrashCollector.Controllers
     public class EmployeesController : Controller
     {
         private readonly ApplicationDbContext _context;
-
+        private int Date;
+        public IEnumerable<CustomerSchedulePU> PUs;
+      
         public EmployeesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         // GET: Employees
-        public async Task<IActionResult> Index()
+        public ActionResult Index()
         {
-            var applicationDbContext = _context.Employees.Include(e => e.IdentityUser);
-            return View(await applicationDbContext.ToListAsync());
+
+            var id = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (_context.Employees.Where(e => e.IdentityUserId == id).SingleOrDefault() == null)
+            {
+                return View("Create");
+            }
+            else
+            {
+
+                var employee = _context.Employees.Where(e => e.IdentityUserId == id).SingleOrDefault();
+                var zip = employee.ZipCode;
+                var Dow = DateTime.Today.DayOfWeek.ToString();
+                PUs = _context.CustomerSchedulePUs.Where(e => e.ZipCode == zip && e.DayOfWeek == Dow);
+                return View(PUs);
+            }
+            // var applicationDbContext = _context.Employees.Include(e => e.IdentityUser);
+            //return View(await applicationDbContext.ToListAsync());
+
+            // var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            //var employee = _context.Employees.Where(c => c.IdentityUserId == userId).FirstOrDefault();
+            //return View(employee);
+
+            //if (employee == null)
+
+            //{
+
+            //    return RedirectToAction("Create");
+
+            //}
+
+            //else
+
+            //{
+
+            //    ViewData["CurrentFilter"] = searchDay;
+
+            //    ViewBag.Day = searchDay;
+
+            //    if (searchDay == "Today" || searchDay == null)
+
+            //    {
+            //        string DayOfWeek = DateTime.Today.DayOfWeek.ToString();
+            //        var customers = _context.Customers.Where(c => c.ZipCode == employee.ZipCode  && c.StartDate <= DateTime.Today && c.EndDate >= DateTime.Today && c.ConfirmPickUp == false).Include(c => c.DayOfWeek).ToList();
+
+            //        var extraDayCustomers = _context.Customers.Where(c => c.ZipCode == employee.ZipCode && c.StartDate <= DateTime.Today && c.EndDate >= DateTime.Today).Include(c => c.DayOfWeek).ToList();
+
+            //        foreach (var person in extraDayCustomers)
+
+            //        {
+
+            //            if (person.ExtraPickUp.HasValue)
+
+            //            {
+
+            //                if (person.ExtraPickUp.Value.DayOfYear == Date)
+
+            //                {
+
+            //                    customers.Add(person);
+
+            //                    person.ExtraPickUp = null;
+
+            //                }
+
+            //            }
+
+            //        }
+
+            //        return View(customers);
+
+            //    }
+
+            //    else
+
+            //    {
+            //        string DayOfWeek = searchDay;
+            //        var filteredCustomers = _context.Customers.Where(c => c.ZipCode == employee.ZipCode ).Include(c => c.DayOfWeek).ToList();
+
+            //        var extraDayCustomers = _context.Customers.Where(c => c.ZipCode == employee.ZipCode).Include(c => c.DayOfWeek).ToList();
+
+            //        foreach (var person in extraDayCustomers)
+
+            //        {
+
+            //            if (person.ExtraPickUp.HasValue)
+
+            //            {
+
+            //                if (person.ExtraPickUp.Value.DayOfWeek.ToString() == searchDay)
+
+            //                {
+
+            //                    filteredCustomers.Add(person);
+
+            //                    person.ExtraPickUp = null;
+
+            //                }
+
+            //            }
+
+            //        }
+
+            //        return View(filteredCustomers);
+
+            //    }
+
+
+
+            //}
+
         }
+    
 
         public async Task<IActionResult> CustomerProfile(string item)
         {
